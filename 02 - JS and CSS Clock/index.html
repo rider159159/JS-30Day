@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>JS + CSS Clock</title>
+</head>
+
+<body>
+
+
+  <div class="clock">
+    <div class="clock-face">
+      <div class="hand hour-hand"></div>
+      <div class="hand min-hand"></div>
+      <div class="hand second-hand"></div>
+    </div>
+  </div>
+
+
+  <style>
+    html {
+      background: #018DED url(http://unsplash.it/1500/1000?image=881&blur=5);
+      background-size: cover;
+      font-family: 'helvetica neue';
+      text-align: center;
+      font-size: 10px;
+    }
+
+    body {
+      margin: 0;
+      font-size: 2rem;
+      display: flex;
+      flex: 1;
+      min-height: 100vh;
+      align-items: center;
+    }
+
+    .clock {
+      width: 30rem;
+      height: 30rem;
+      border: 20px solid white;
+      border-radius: 50%;
+      margin: 50px auto;
+      position: relative;
+      padding: 2rem;
+      box-shadow:
+        0 0 0 4px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 3px #EFEFEF,
+        inset 0 0 10px black,
+        0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .clock-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform: translateY(-3px);
+      /* account for the height of the clock hands */
+    }
+
+    .hand {
+      width: 50%;
+      height: 6px;
+      background: black;
+      position: absolute;
+      top: 50%;
+      transform-origin: 100%;
+      transform: rotate(90deg);
+      transition: all 0.05s;
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1);
+    }
+
+  </style>
+
+  <script>
+    (function () {
+      const secondHand = document.querySelector('.second-hand');
+      const minsHand = document.querySelector('.min-hand');
+      const hourHand = document.querySelector('.hour-hand');
+      function setDate() {
+        const d = new Date();
+        //360度/60分=6 ,固*6 ，+90則是起始位置為9點鐘，固補上90度=正確顯示時間
+        const seconds = d.getSeconds() * 6 + 90;
+        //同上解釋，後方計算秒針為了補上分針會隨秒針前進一定度數
+        const mins = (d.getMinutes() * 6 + 90) + ((d.getSeconds() / 60) * 6);
+        //360度/12=30，固*30 ，後方計算分針為了補上時針會隨秒針前進一定度數
+        const hour = (d.getHours() * 30 + 90) + ((d.getMinutes() / 60) * 30);
+        secondHand.style.transform = `rotate(${seconds}deg)`;
+        minsHand.style.transform = `rotate(${mins}deg)`;
+        hourHand.style.transform = `rotate(${hour}deg)`;
+      }
+
+      function timeoutHandler() {
+        setDate();
+        setTimeout(timeoutHandler, 1000)
+      }
+      timeoutHandler();
+    })()
+  </script>
+</body>
+
+</html>
